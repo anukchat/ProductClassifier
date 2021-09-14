@@ -1,0 +1,46 @@
+Product Classification Requirements
+
+1. Product Dataset
+2. Pretrained Model - Transfer learning
+3. Dataset Class and DataModule class for transformation
+4. Classification class
+5. Model class
+6. trainer
+7. API endpoints
+
+
+Steps:
+1. Organize dataset into proper folder structure
+2. Create Dataset class
+--	ProductDataset
+	-- __getitem__
+	-- __len__
+--	ProductDataModule
+	-- prepare_data --for creating KFolds
+	-- setup --for returning train and validation dataset
+	-- train_dataloader returns DataLoader object
+	-- valid_dataloader returns DataLoader object
+	
+3. Create Model class
+-- ProductModel
+	-- In constructor remove and add ne layers fpr transfer learning
+	-- forward method 
+	-- configure_optimizers method
+	-- training_step
+	-- validation_step
+	
+4. config file
+-- model Name
+-- train dir
+-- test dir
+-- train_csv
+-- pretrained_path
+-- batch_size
+-- image_size
+-- classes
+-- class_categories
+
+5. ImageClassifier class (puprose is to classify the image)
+	-- Predict method
+	-- 
+	
