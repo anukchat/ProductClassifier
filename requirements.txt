@@ -1,0 +1,8 @@
+pytorch-lightning
+albumentations
+numpy
+pandas
+torch
+torchvision
+opencv-python
+scikit_learn
