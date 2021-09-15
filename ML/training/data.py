@@ -6,7 +6,7 @@ from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import Dataset, DataLoader
 from albumentations.pytorch.transforms import ToTensorV2
 import pytorch_lightning as pl
-from training import config
+from ML.training import config
 
 class ProductDataset(Dataset):
     def __init__(self, df: pd.DataFrame, imfolder: str,train:bool = True,transforms=None):
@@ -16,7 +16,7 @@ class ProductDataset(Dataset):
         self.transforms=transforms
     
     def __getitem__(self,index):
-        im_path = os.path.join(self.imfolder, self.df.iloc[index]['image_id'])
+        im_path = os.path.join(self.imfolder, self.df.iloc[index]['name'])
         x = cv2.imread(im_path, cv2.IMREAD_COLOR)
         x = cv2.cvtColor(x, cv2.COLOR_BGR2RGB)
 
@@ -24,7 +24,7 @@ class ProductDataset(Dataset):
             x = self.transforms(image=x)['image']
 
         if(self.train):
-            y = self.df.iloc[index]['label']
+            y = self.df.iloc[index]['class']
             return {
                 "x": x,
                 "y": y,
@@ -68,9 +68,9 @@ class ProductDataModule(pl.LightningDataModule):
         # prepare_data is called only once on 1- GPU in a distributed computing
         df = pd.read_csv(config.TRAIN_CSV)
         df["kfold"] = -1
-        df = df.sample(frac=1).reset_index(drop=True)
+        df = df[df['class']<1000].sample(frac=1).reset_index(drop=True)
         stratify = StratifiedKFold(n_splits=5)
-        for i, (t_idx, v_idx) in enumerate(stratify.split(X=df.image_id.values, y=df.label.values)):
+        for i, (t_idx, v_idx) in enumerate(stratify.split(X=df.name.values, y=df['class'].values)):
             df.loc[v_idx, "kfold"] = i
             df.to_csv("train_folds.csv", index=False)
 

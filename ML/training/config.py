@@ -1,7 +1,9 @@
-IMG_SIZE=224
-TRAIN_CSV=""
-TRAIN_IMAGES_DIR=""
+IMG_SIZE=260
+TRAIN_CSV="Dataset\\train.csv"
+TRAIN_IMAGES_DIR="Dataset\\train_sample"
+TEST_IMAGES_DIR="Dataset\\test"
+PRETRAINED_PATH='ml\\trained_model\efficientnet-b0.pth'
 BATCH_SIZE=32
-CLASSES=10
-MODEL_NAME=""
-CLASS_CATEGORIES=""
+CLASSES=100
+MODEL_NAME="cassava_efficient_net.ckpt"
+# CLASS_CATEGORIES={'1', '2','3', '4', '5','6', '7','8', '9','10'}

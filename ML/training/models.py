@@ -1,6 +1,6 @@
 import pytorch_lightning as pl
 from efficientnet_pytorch import EfficientNet
-from training import config
+from ML.training import config
 import torch.nn.functional as F
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.metrics.functional import accuracy
@@ -11,7 +11,7 @@ class ProductModel(pl.LightningModule):
     def __init__(self):
         super().__init__()
         self.efficient_net = EfficientNet.from_pretrained(
-            'efficientnet-b5', num_classes=config.CLASSES)
+            'efficientnet-b2', num_classes=config.CLASSES)
         in_features = self.efficient_net._fc.in_features
         self.efficient_net._fc = nn.Linear(in_features, config.CLASSES)
 
@@ -21,7 +21,7 @@ class ProductModel(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(
-            self.parameters(), lr=1e-4, weight_decay=0.0001)
+            self.parameters(), lr=1e-4, weight_decay=0.001)
         scheduler = torch.optim.lr_scheduler.StepLR(
             optimizer, step_size=2, gamma=0.1)
         return [optimizer], [scheduler]

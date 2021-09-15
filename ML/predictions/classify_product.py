@@ -13,7 +13,7 @@ class ProductClassifier:
         model_path = os.path.join('ml', 'trained_model', MODEL_NAME)
         self.classifier = self.classifier.load_from_checkpoint(
             checkpoint_path=model_path)
-        self.classifier = self.classifier.to('cpu')
+        self.classifier = self.classifier.to('gpu')
         self.classifier.eval()
         self.classifier.freeze()
     
@@ -42,4 +42,4 @@ class ProductClassifier:
         output = self.classifier(image)
         class_idx = torch.argmax(output, dim=1)
 
-        return CLASS_CATEGORIES[class_idx]
+        return class_idx
