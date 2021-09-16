@@ -1,6 +1,6 @@
 from ML.training.models import ProductModel
-from ML.training.config import CLASS_CATEGORIES, MODEL_NAME, IMG_SIZE
-
+from ML.training.config import CLASS_CATEGORIES,MODEL_NAME, IMG_SIZE
+import torchvision.models as models 
 import torch
 import albumentations as albu
 from albumentations.pytorch.transforms import ToTensorV2
@@ -9,13 +9,14 @@ import os
 
 class ProductClassifier:
     def __init__(self):
-        self.classifier=ProductModel()
+        # self.classifier=ProductModel()
         model_path = os.path.join('ml', 'trained_model', MODEL_NAME)
-        self.classifier = self.classifier.load_from_checkpoint(
-            checkpoint_path=model_path)
-        self.classifier = self.classifier.to('gpu')
+        # self.classifier = self.classifier.load_from_checkpoint(
+        #     checkpoint_path=model_path)
+        self.classifier=models.inception_v3(pretrained=True)
+        self.classifier = self.classifier.to('cpu')
         self.classifier.eval()
-        self.classifier.freeze()
+        # self.classifier.freeze()
     
     def predict(self, image):
         test_transform = albu.Compose([
@@ -42,4 +43,9 @@ class ProductClassifier:
         output = self.classifier(image)
         class_idx = torch.argmax(output, dim=1)
 
-        return class_idx
+        return CLASS_CATEGORIES[class_idx.item()]
+
+
+image=cv2.imread('Dataset\\n07930864_cup.jfif')
+classifier=ProductClassifier()
+print(classifier.predict(image))

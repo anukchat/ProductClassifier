@@ -1,5 +1,5 @@
 import pytorch_lightning as pl
-from efficientnet_pytorch import EfficientNet
+import torchvision.models as models
 from ML.training import config
 import torch.nn.functional as F
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
@@ -10,13 +10,14 @@ import torch
 class ProductModel(pl.LightningModule):
     def __init__(self):
         super().__init__()
-        self.efficient_net = EfficientNet.from_pretrained(
-            'efficientnet-b2', num_classes=config.CLASSES)
-        in_features = self.efficient_net._fc.in_features
-        self.efficient_net._fc = nn.Linear(in_features, config.CLASSES)
+        # self.efficient_net = EfficientNet.from_pretrained(
+        #     'efficientnet-b2', num_classes=config.CLASSES)
+        self.model=models.resnet18(pretrained=True)
+        in_features = self.model.c.in_features
+        self.model._fc = nn.Linear(in_features, config.CLASSES)
 
     def forward(self,x):
-        out = self.efficient_net(x)
+        out = self.model(x)
         return out
 
     def configure_optimizers(self):
